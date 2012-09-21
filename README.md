@@ -6,6 +6,12 @@ Node.js module for [http://passdock.com/](PassDock) API methods for iOS 6 PassBo
 API docs: <https://api.passdock.com/doc>
 
 
+BETA notice
+===========
+
+This module code and the consulting API are in an early development stage. The methods may produced unexpected results.
+
+
 Installation
 ============
 
