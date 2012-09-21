@@ -41,5 +41,5 @@ var passdock = require('passdock')
 
 passdock.api.token = 'your authentication token'
 
-passdock.passes.list( console.log )
+passdock.templates.list( console.log )
 ```
