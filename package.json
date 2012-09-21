@@ -1,0 +1,29 @@
+{
+  "author": {
+    "name":               "Franklin van de Meent",
+    "email":              "fr@nkl.in",
+    "url":                "http://frankl.in"
+  },
+  "name":                 "passdock",
+  "description":          "Access PassDock API methods for iOS 6 PassBook",
+  "version":              "1.0.0",
+  "repository": {
+    "type":               "git",
+    "url":                "git://github.com/fvdm/nodejs-passdock.git"
+  },
+  "bugs": {
+    "url":                "https://github.com/fvdm/nodejs-passdock/issues"
+  },
+  "main":                 "passdock.js",
+  "dependencies":         {},
+  "devDependencies":      {},
+  "optionalDependencies": {},
+  "engines": {
+    "node":               "*"
+  },
+  "keywords":             ["passdock", "passbook", "api"],
+  "license": {
+    "type":               "Public Domain",
+    "url":                "https://github.com/fvdm/nodejs-passdock/raw/master/UNLICENSE"
+  }
+}
