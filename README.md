@@ -1,7 +1,7 @@
 nodejs-passdock
 ===============
 
-Node.js module for [http://passdock.com/](PassDock) API methods for iOS 6 PassBook.
+Node.js module for [PassDock](http://passdock.com/) API methods for iOS 6 PassBook.
 
 API docs: <https://api.passdock.com/doc>
 
