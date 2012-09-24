@@ -43,7 +43,7 @@ var app = {
 }
 
 // Communication error
-app.buildError = function( reason, response ) {
+app.buildError = function( reason, response, requestBody ) {
 	return {
 		reason: reason,
 		response: {
@@ -55,6 +55,7 @@ app.buildError = function( reason, response ) {
 			method: response.req.method,
 			path: response.req.path,
 			headers: response.req._headers,
+			body: requestBody,
 			finished: response.req.finished
 		}
 	}
@@ -100,7 +101,7 @@ app.talk = function( method, path, fields, cb ) {
 			if( response.statusCode >= 500 ) {
 				
 				// server trouble
-				cb( data, app.buildError( 'server error', response ))
+				cb( data, app.buildError( 'server error', response, fields ))
 				
 			} else if( response.statusCode >= 200 && response.statusCode < 300 ) {
 				
@@ -108,20 +109,20 @@ app.talk = function( method, path, fields, cb ) {
 				if( data.match( /^(\{.*\}|\[.*\])$/ ) ) {
 					cb( JSON.parse( data ), false )
 				} else {
-					cb( data, app.buildError( 'invalid data', response ))
+					cb( data, app.buildError( 'invalid data', response, fields ))
 				}
 				
 			} else {
 				
 				// API error
-				cb( data, app.buildError( 'error', response ))
+				cb( data, app.buildError( 'error', response, fields ))
 				
 			}
 		})
 		
 		// request cut off
 		response.on( 'close', function( err ) {
-			cb( data.toString('utf8'), {reason: 'early disconnect'} )
+			cb( data.toString('utf8'), app.buildError( 'early disconnect', response, fields ))
 		})
 	})
 	
