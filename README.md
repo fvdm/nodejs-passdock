@@ -140,7 +140,7 @@ Create a new pass using `templateID`.
 
 
     serial_number  required  The serial number for the Pass, must be unique and
-                            cannot be changed
+                             cannot be changed
     
     bar.message    optional  The message to be put in the code
     bar.altText    optional  The alternative text that will be put below the code
@@ -149,8 +149,8 @@ Create a new pass using `templateID`.
     KEY.label      optional  The label for the field, usually placed above the value
     KEY.value      optional  The value of the field, usually placed below the label
     KEY.message    optional  The change message that will be shown in the lock screen
-                            and as notification when the value for the field is
-                            changed remotely
+                             and as notification when the value for the field is
+                             changed remotely
 
 ```js
 // KFC pass
