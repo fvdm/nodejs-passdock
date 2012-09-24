@@ -37,6 +37,7 @@ var app = {
 	api: {
 		host: 'api.passdock.com',
 		path: '/api/v1/',
+		timeout: 30,
 		token: ''
 	}
 }
@@ -78,6 +79,8 @@ app.talk = function( method, path, fields, cb ) {
 			}
 		})
 	})
+	
+	req.setTimeout( app.api.timeout * 60 )
 	
 	if( method == 'GET' ) {
 		req.end()
