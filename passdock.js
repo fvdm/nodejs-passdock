@@ -125,7 +125,7 @@ app.talk = function( method, path, fields, cb ) {
 		})
 	})
 	
-	req.setTimeout( app.api.timeout * 60 )
+	req.setTimeout( app.api.timeout * 1000 )
 	
 	if( method == 'GET' ) {
 		req.end()
