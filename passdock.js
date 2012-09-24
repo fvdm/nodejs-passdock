@@ -42,6 +42,24 @@ var app = {
 	}
 }
 
+// Communication error
+app.buildError = function( reason, response ) {
+	return {
+		reason: reason,
+		response: {
+			headers: response.headers,
+			statusCode: response.statusCode,
+			complete: response.complete
+		},
+		request: {
+			method: response.req.method,
+			path: response.req.path,
+			headers: response.req._headers,
+			finished: response.req.finished
+		}
+	}
+}
+
 // Communicate
 app.talk = function( method, path, fields, cb ) {
 	if( !cb && typeof fields == 'function' ) {
@@ -72,11 +90,31 @@ app.talk = function( method, path, fields, cb ) {
 		var data = ''
 		response.on( 'data', function( d ) { data += d })
 		response.on( 'end', function() {
-			if( data.match( /^(\{.*\}|\[.*\])$/ ) ) {
-				cb( JSON.parse( data ), true )
+			if( response.statusCode >= 500 ) {
+				
+				// server trouble
+				cb( data, app.buildError( 'server error', response ))
+				
+			} else if( response.statusCode >= 200 && response.statusCode < 300 ) {
+				
+				// all good
+				if( data.match( /^(\{.*\}|\[.*\])$/ ) ) {
+					cb( JSON.parse( data ), false )
+				} else {
+					cb( data, app.buildError( 'invalid data', response ))
+				}
+				
 			} else {
-				cb( data, false )
+				
+				// API error
+				cb( data, app.buildError( 'error', response ))
+				
 			}
+		})
+		
+		// request cut off
+		response.on( 'close', function( err ) {
+			cb( data.toString('utf8'), {reason: 'early disconnect'} )
 		})
 	})
 	
