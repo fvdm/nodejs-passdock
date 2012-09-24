@@ -43,3 +43,5 @@ passdock.api.token = 'your authentication token'
 
 passdock.templates.list( console.log )
 ```
+
+`api.token` is required to authenticate your API calls.
