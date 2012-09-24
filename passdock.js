@@ -67,6 +67,7 @@ app.talk = function( method, path, fields, cb ) {
 		var fields = {}
 	}
 	
+	// build request
 	fields.api_token = app.api.token
 	fields = querystring.stringify( fields )
 	
@@ -86,9 +87,12 @@ app.talk = function( method, path, fields, cb ) {
 		options.headers['Content-Length'] = fields.length
 	}
 	
+	// do request
 	var req = https.request( options, function( response ) {
 		var data = ''
 		response.on( 'data', function( d ) { data += d })
+		
+		// process response
 		response.on( 'end', function() {
 			data = data.toString('utf8').trim()
 			
