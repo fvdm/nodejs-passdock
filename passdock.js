@@ -84,6 +84,7 @@ app.talk = function( method, path, fields, cb ) {
 	}
 	
 	if( method != 'GET' ) {
+		options.headers['Content-Type'] = 'application/x-www-form-urlencoded'
 		options.headers['Content-Length'] = fields.length
 	}
 	
