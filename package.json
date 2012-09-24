@@ -6,7 +6,7 @@
   },
   "name":                 "passdock",
   "description":          "Access PassDock API methods for iOS 6 PassBook",
-  "version":              "0.1.0",
+  "version":              "0.2.0",
   "repository": {
     "type":               "git",
     "url":                "git://github.com/fvdm/nodejs-passdock.git"
