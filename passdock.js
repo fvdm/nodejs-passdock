@@ -90,6 +90,8 @@ app.talk = function( method, path, fields, cb ) {
 		var data = ''
 		response.on( 'data', function( d ) { data += d })
 		response.on( 'end', function() {
+			data = data.toString('utf8').trim()
+			
 			if( response.statusCode >= 500 ) {
 				
 				// server trouble
