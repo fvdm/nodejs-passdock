@@ -30,8 +30,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 For more information, please refer to <http://unlicense.org/>
 */
 
-var https = require('https'),
-    querystring = require('querystring')
+var https = require('https')
+var querystring = require('querystring')
 
 var app = {
 	api: {
