@@ -18,6 +18,7 @@
   "scripts": {
     "test": "bash test.sh"
   },
+  "tonicExampleFilename": "example.js",
   "dependencies": {
     "httpreq": "^0.4.22"
   },
