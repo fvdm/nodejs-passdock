@@ -36,7 +36,10 @@ Installation
 Methods
 -------
 
-Each method takes a `callback` function to process the result. This callback receives two parameters: `result` and `error`. When an error occurs the `error` param is an **object** and `result` is the received unparsed text. When all is good `error` is **false** and `result` is the parsed JSON data.
+Each method takes a `callback` function to process the result.
+This callback receives two parameters: `result` and `error`.
+When an error occurs the `error` param is an **object** and `result` is the received unparsed text.
+When all is good `error` is **false** and `result` is the parsed JSON data.
 
 **Warning:** the `error` object may contain your API-key! Make sure this won't go public.
 
