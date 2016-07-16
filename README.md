@@ -14,12 +14,6 @@ Node.js module for [PassDock](http://passdock.com/) API methods for iOS Wallet
 * [API documentation](https://api.passdock.com/doc)
 
 
-Installation
-------------
-
-`npm install passdock`
-
-
 Example
 -------
 
@@ -31,6 +25,12 @@ const passdock = new Passdock ({
 
 passdock.templates.list (console.log);
 ```
+
+
+Installation
+------------
+
+`npm install passdock`
 
 
 Methods
