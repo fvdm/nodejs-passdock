@@ -1,29 +1,34 @@
 {
   "author": {
-    "name":               "Franklin van de Meent",
-    "email":              "fr@nkl.in",
-    "url":                "http://frankl.in"
+    "name": "Franklin van de Meent",
+    "email": "fr@nkl.in",
+    "url": "https://frankl.in"
   },
-  "name":                 "passdock",
-  "description":          "Access PassDock API methods for iOS 6 PassBook",
-  "version":              "0.2.1",
+  "name": "passdock",
+  "description": "Access PassDock API methods for iOS 6 PassBook",
+  "version": "0.2.1",
   "repository": {
-    "type":               "git",
-    "url":                "git://github.com/fvdm/nodejs-passdock.git"
+    "type": "git",
+    "url": "git://github.com/fvdm/nodejs-passdock.git"
   },
   "bugs": {
-    "url":                "https://github.com/fvdm/nodejs-passdock/issues"
+    "url": "https://github.com/fvdm/nodejs-passdock/issues"
   },
-  "main":                 "passdock.js",
-  "dependencies":         {},
-  "devDependencies":      {},
-  "optionalDependencies": {},
+  "main": "passdock.js",
+  "dependencies": {
+  },
+  "devDependencies": {
+  },
   "engines": {
-    "node":               "*"
+    "node": ">=4.0.0"
   },
-  "keywords":             ["passdock", "passbook", "api"],
-  "license": {
-    "type":               "Public Domain",
-    "url":                "https://github.com/fvdm/nodejs-passdock/raw/master/UNLICENSE"
-  }
+  "keywords": [
+    "api",
+    "applewallet",
+    "ios",
+    "passdock",
+    "passbook",
+    "wallet"
+  ],
+  "license": "Unlicense"
 }
