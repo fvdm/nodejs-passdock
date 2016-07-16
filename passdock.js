@@ -1,155 +1,173 @@
 /*
-Name      : passdock
-Source    : https://github.com/fvdm/nodejs-passdock
-Feedback  : https://github.com/fvdm/nodejs-passdock/issues
-License   : Unlicense / Public Domain
-
-This is free and unencumbered software released into the public domain.
-
-Anyone is free to copy, modify, publish, use, compile, sell, or
-distribute this software, either in source code form or as a compiled
-binary, for any purpose, commercial or non-commercial, and by any
-means.
-
-In jurisdictions that recognize copyright laws, the author or authors
-of this software dedicate any and all copyright interest in the
-software to the public domain. We make this dedication for the benefit
-of the public at large and to the detriment of our heirs and
-successors. We intend this dedication to be an overt act of
-relinquishment in perpetuity of all present and future rights to this
-software under copyright law.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-OTHER DEALINGS IN THE SOFTWARE.
-
-For more information, please refer to <http://unlicense.org/>
+Name:             passdock
+Author:           Franklin van de Meent (https://frankl.in)
+Source and docs:  https://github.com/fvdm/nodejs-passdock
+Feedback:         https://github.com/fvdm/nodejs-passdock/issues
+License:          Unlicense (public domain, see LICENSE file)
 */
 
-var https = require ('https')
-var querystring = require ('querystring')
+const httpreq = require ('httpreq');
 
-var app = {
-  api: {
-    host: 'api.passdock.com',
-    path: '/api/v1/',
-    timeout: 30,
-    token: ''
-  }
+const rootPath = __dirname;
+
+const Analytics = require (rootPath + '/lib/analytics.js');
+const Campaigns = require (rootPath + '/lib/campaigns.js');
+const Certificates = require (rootPath + '/lib/certificates.js');
+const Devices = require (rootPath + '/lib/devices.js');
+const Lists = require (rootPath + '/lib/lists.js');
+const Passes = require (rootPath + '/lib/passes.js');
+const People = require (rootPath + '/lib/people.js');
+const Registrations = require (rootPath + '/lib/registrations.js');
+const Sessions = require (rootPath + '/lib/sessions.js');
+const Templates = require (rootPath + '/lib/templates.js');
+
+
+/**
+ * Callback an error
+ *
+ * @callback callback
+ * @param msg {string} - Error.message
+ * @param err {mixed, null} - Error.error
+ * @param res {object} - httpreq response details
+ * @param callback {function} - `function (err) {}`
+ * @return {void}
+ */
+
+function doError (msg, err, res, callback) {
+  let error = new Error (msg);
+
+  error.statusCode = res && res.statusCode;
+  error.error = err;
+  callback (error);
 }
 
-// Communication error
-app.buildError = function ( reason, response, requestBody ) {
-  return {
-    reason: reason,
-    response: {
-      headers: response.headers,
-      statusCode: response.statusCode,
-      complete: response.complete
-    },
-    request: {
-      method: response.req.method,
-      path: response.req.path,
-      headers: response.req._headers,
-      body: requestBody,
-      finished: response.req.finished
-    }
+
+/**
+ * Process httpreq response
+ *
+ * @callback callback
+ * @param err {Error, null} - Error
+ * @param res {object} - Response details
+ * @param callback {function} - `function (err, data) {}`
+ * @return {void}
+ */
+
+function processResponse (err, res, callback) {
+  let data = res && res.body || '';
+
+  // httpreq error
+  if (err) {
+    callback (err);
+    return;
   }
+
+  // parse data
+  try {
+    data = JSON.parse (data);
+  } catch (e) {
+    doError ('Invalid response', e, res, callback);
+    return;
+  }
+
+  // API error
+  if (res.statusCode >= 300) {
+    doError ('API error', data, res, callback);
+    return;
+  }
+
+  // all good
+  callback (null, data);
 }
 
-// Communicate
-app.talk = function ( method, path, fields, cb ) {
-  if ( !cb && typeof fields == 'function' ){
-    var cb = fields
-    var fields = {}
-  }
-	
-  // build request
-  fields.api_token = app.api.token
-  fields = querystring.stringify ( fields )
-	
-  var options = {
-    host: app.api.host,
-    port: 443,
-    path: app.api.path + path + (method == 'GET' ? '?' + fields : ''),
-    method: method,
-    agent: false,
-    headers: {
-      Accept: 'application/json',
-      'User-Agent': 'passdock.js (https://github.com/fvdm/nodejs-passdock)'
-    }
-  }
-	
-  if ( method != 'GET' ){
-    options.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-    options.headers['Content-Length'] = fields.length
-  }
-	
-  // do request
-  var req = https.request ( options, function ( response ) {
-    var data = ''
-    response.on ( 'data', function ( d ) { data += d })
-		
-    // process response
-    response.on ( 'end', function () {
-      data = data.toString ('utf8').trim ()
-			
-      if ( response.statusCode >= 500 ){
-				
-        // server trouble
-        cb ( data, app.buildError ( 'server error', response, fields ))
-				
-      } else if ( response.statusCode >= 200 && response.statusCode < 300 ){
-				
-        // all good
-        if ( data.match ( /^(\{.*\}|\[.*\])$/ ) ){
-          cb ( JSON.parse ( data ), false )
-        } else {
-          cb ( data, app.buildError ( 'invalid data', response, fields ))
-        }
-				
-      } else {
-				
-        // API error
-        cb ( data, app.buildError ( 'error', response, fields ))
-				
+
+/**
+ * Passdock API class
+ */
+
+class Passdock {
+  constructor (set) {
+    let key;
+
+    this.rootPath = rootPath;
+
+    // config defaults
+    this.config = {
+      timeout: 5000,
+      endpoint: 'https://api.passdock.com/api/v1'
+    };
+
+    // config overrides
+    if (set) {
+      for (key in set) {
+        this.config [key] = set [key];
       }
-    })
-		
-    // request cut off
-    response.on ( 'close', function ( err ) {
-      cb ( data.toString ('utf8'), app.buildError ( 'early disconnect', response, fields ))
-    })
-  })
-	
-  req.setTimeout ( app.api.timeout * 1000 )
-	
-  if ( method != 'GET' ){
-    req.write ( fields )
+    }
+
+    // load methods
+    this.analytics = new Analytics (this);
+    this.campaigns = new Campaigns (this);
+    this.certificates = new Certificates (this);
+    this.devices = new Devices (this);
+    this.lists = new Lists (this);
+    this.passes = new Passes (this);
+    this.people = new People (this);
+    this.registrations = new Registrations (this);
+    this.sessions = new Sessions (this);
+    this.templates = new Templates (this);
   }
-	
-  req.end ()
+
+
+  /**
+   * Send HTTP request
+   *
+   * @callback callback
+   * @param props {object} - Request details
+   * @param props.path {string} - Request path after `/api/v1`
+   * @param [props.method = GET] {string} - HTTP method: GET, POST, PUT, DELETE
+   * @param [props.params] {object} - Parameters to send
+   * @param [props.timeout = 5000] {number} - Request timeout in ms
+   * @param callback {function} - `function (err, data) {}`
+   * @return {void}
+   */
+
+  httpRequest (props, callback) {
+    let key;
+    let val;
+
+    let options = {
+      method: props.method || 'GET',
+      url: this.config.endpoint + props.path,
+      parameters: props.params instanceof Object ? props.params : {},
+      json: props.json,
+      timeout: props.timeout || this.config.timeout,
+      headers: {
+        'Accept': 'application/json',
+        'User-Agent': 'node.js/passdoc (https://github.com/fvdm/nodejs-passdock)'
+      }
+    };
+
+    // set API token
+    if (this.config.token) {
+      options.parameters.api_token = this.config.token;
+    }
+
+    // stringify JSON data
+    for (key in options.parameters) {
+      val = options.parameters [key];
+
+      if (typeof val === 'object') {
+        options.parameters [key] = JSON.stringify (val);
+      }
+    }
+
+    // proxy response processing
+    function httpResponse (err, res) {
+      processResponse (err, res, callback);
+    }
+
+    // send request
+    httpreq.doRequest (options, httpResponse);
+  }
 }
 
-// Templates
-app.templates = {
-  list: function ( cb ) { app.talk ( 'GET', 'templates', cb ) },
-  show: function ( id, cb ) { app.talk ( 'GET', 'templates/' + id, cb ) },
-  delete: function ( id, cb ) { app.talk ( 'DELETE', 'templates/' + id, cb ) }
-}
-
-// Passes
-app.passes = {
-  list: function ( tid, cb ) { app.talk ( 'GET', 'templates/' + tid +'/passes', cb ) },
-  show: function ( tid, id, cb ) { app.talk ( 'GET', 'templates/' + tid +'/passes/' + id, cb ) },
-  delete: function ( tid, id, cb ) { app.talk ( 'DELETE', 'templates/' + tid +'/passes/' + id, cb ) },
-  create: function ( tid, pass, cb ) { app.talk ( 'POST', 'templates/' + tid +'/passes', { pass: pass }, cb ) },
-  update: function ( tid, pid, pass, cb ) { app.talk ( 'PUT', 'template/' + tid +'/passes/' + pid, { pass: pass }, cb ) }
-}
-
-// module magic
-module.exports = app
+module.exports = Passdock;
