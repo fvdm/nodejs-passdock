@@ -24,7 +24,8 @@ Example
 -------
 
 ```js
-var passdock = require ('passdock') ({
+const Passdock = require ('passdock');
+const passdock = new Passdock ({
   token: 'authentication token'
 });
 
