@@ -3,6 +3,10 @@ passdock
 
 Node.js module for [PassDock](http://passdock.com/) API methods for iOS Wallet
 
+[![npm](https://img.shields.io/npm/v/passdock.svg?maxAge=300)](https://github.com/fvdm/nodejs-passdock/blob/master/CHANGELOG.md)
+[![Build Status](https://travis-ci.org/fvdm/nodejs-passdock.svg?branch=master)](https://travis-ci.org/fvdm/nodejs-passdock)
+[![Dependency Status](https://gemnasium.com/badges/github.com/fvdm/nodejs-passdock.svg)](https://gemnasium.com/github.com/fvdm/nodejs-passdock#runtime-dependencies)
+[![Coverage Status](https://coveralls.io/repos/github/fvdm/nodejs-passdock/badge.svg?branch=master)](https://coveralls.io/github/fvdm/nodejs-passdock?branch=master)
 
 * [Node.js](https://nodejs.org)
 * [Package on npm](https://www.npmjs.com/package/passdock)
