@@ -19,6 +19,7 @@
     "test": "bash test.sh"
   },
   "dependencies": {
+    "httpreq": "^0.4.22"
   },
   "devDependencies": {
   },
