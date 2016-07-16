@@ -15,6 +15,9 @@
     "url": "https://github.com/fvdm/nodejs-passdock/issues"
   },
   "main": "passdock.js",
+  "scripts": {
+    "test": "bash test.sh"
+  },
   "dependencies": {
   },
   "devDependencies": {
