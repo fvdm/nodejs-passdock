@@ -14,7 +14,7 @@
   "bugs": {
     "url": "https://github.com/fvdm/nodejs-passdock/issues"
   },
-  "main": "passdock.js",
+  "main": "index.js",
   "scripts": {
     "test": "bash test.sh"
   },
