@@ -148,7 +148,7 @@ app.passes = {
   show: function ( tid, id, cb ) { app.talk ( 'GET', 'templates/' + tid +'/passes/' + id, cb ) },
   delete: function ( tid, id, cb ) { app.talk ( 'DELETE', 'templates/' + tid +'/passes/' + id, cb ) },
   create: function ( tid, pass, cb ) { app.talk ( 'POST', 'templates/' + tid +'/passes', { pass: pass }, cb ) },
-  update: function ( tid, pid, pass, cb ) { app.talk ( 'PUT', 'template/' + tid +'/passes/' + pid, { pass: pass }, cb ) }
+  update: function ( tid, pid, pass, cb ) { app.talk ( 'PUT', 'templates/' + tid +'/passes/' + pid, { pass: pass }, cb ) }
 }
 
 // module magic
