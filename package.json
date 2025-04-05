@@ -1,8 +1,8 @@
 {
   "author": {
-    "name": "Franklin van de Meent",
-    "email": "fr@nkl.in",
-    "url": "http://frankl.in"
+    "name": "Franklin",
+    "email": "info@fvdm.com",
+    "url": "https://fvdm.com"
   },
   "name": "passdock",
   "description": "Access PassDock API methods for iOS 6 PassBook",
@@ -17,7 +17,6 @@
   "main": "passdock.js",
   "dependencies": {},
   "devDependencies": {},
-  "optionalDependencies": {},
   "engines": {
     "node": "*"
   },
